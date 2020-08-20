@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+	<Properties>
+		<Property name="consolePattern">%d{dd-MM-yy HH:mm:ss.SSS} [%t] %-5p - %m%n</Property>
+		<Property name="logDirectory">./logs</Property>
+		<Property name="log">executionDebug</Property>
+	</Properties>
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${consolePattern}" />
+		</Console>
+		<RollingFile name="file" fileName="${logDirectory}/${log}.log" filePattern="${logDirectory}/${log}_archive_%i.log" append="true">
+			<PatternLayout pattern="${consolePattern}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="1MB" />
+			</Policies>
+		</RollingFile>
+		<File name="html" fileName="${logDirectory}/${log}.html" append="false">
+			<HTMLLayout charset="UTF-8" fontSize="XSMALL" title="Last Execution Log" />
+		</File>
+	</Appenders>
+	<Loggers>
+		<Root level="TRACE">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="file" level="DEBUG" />
+			<AppenderRef ref="html" level="INFO" />
+		</Root>
+	</Loggers>
+</Configuration>
