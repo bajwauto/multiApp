@@ -1,5 +1,8 @@
 package com.goibibo.pages;
 
+import static utilities.Log.error;
+import static utilities.Log.info;
+
 import org.openqa.selenium.By;
 
 import utilities.Generic;
@@ -27,12 +30,14 @@ public class FlightsPage extends Page {
 				browser.click("multiCity_Button");
 				break;
 			default:
+				error("Invalid trip type - " + tripType);
 				throw new Exception("Invalid trip type - " + tripType);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Unable to select the trip type \"" + tripType + "\"");
+			error("Unable to select the trip type \"" + tripType + "\"");
 		}
+		info("Selected the trip type - " + tripType);
 	}
 
 	/**
@@ -48,6 +53,7 @@ public class FlightsPage extends Page {
 			e.printStackTrace();
 			System.err.println("Could not set \"" + sourceCity + "\" as the source city of the trip");
 		}
+		info("Selected the Source city - " + sourceCity);
 	}
 
 	/**
@@ -63,6 +69,7 @@ public class FlightsPage extends Page {
 			e.printStackTrace();
 			System.err.println("Could not set \"" + destinationCity + "\" as the destination city of the trip");
 		}
+		info("Selected the Destination city - " + destinationCity);
 	}
 
 	private void setCalendarDate(String date, String format) throws Exception {
@@ -74,9 +81,10 @@ public class FlightsPage extends Page {
 				.equalsIgnoreCase(expectedMY)) {
 			browser.click("nextMonth_Button");
 		}
-		if (!actualMY.equalsIgnoreCase(expectedMY))
+		if (!actualMY.equalsIgnoreCase(expectedMY)) {
+			error("Could not navigate to the desired Month in the calendar");
 			throw new Exception("Could not navigate to the desired Month in the calendar");
-		else {
+		} else {
 			browser.click(By.xpath("//div[@class='DayPicker-Day']/div[text()='" + expectedD + "']"));
 		}
 	}
@@ -93,8 +101,9 @@ public class FlightsPage extends Page {
 			setCalendarDate(date, format);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Could not set \"" + date + "\" as the departure date");
+			error("Could not set \"" + date + "\" as the departure date");
 		}
+		info("Selected the Deprature Date - " + date);
 	}
 
 	/**
@@ -109,8 +118,9 @@ public class FlightsPage extends Page {
 			setCalendarDate(date, format);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Could not set \"" + date + "\" as the return date");
+			error("Could not set \"" + date + "\" as the return date");
 		}
+		info("Selected the Return Date - " + date);
 	}
 
 	/**
@@ -128,8 +138,9 @@ public class FlightsPage extends Page {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Unable to set the number of adult travellers to " + noOfAdults);
+			error("Unable to set the number of adult travellers to " + noOfAdults);
 		}
+		info("No. of adult travellers set to " + noOfAdults);
 	}
 
 	/**
@@ -149,6 +160,7 @@ public class FlightsPage extends Page {
 			e.printStackTrace();
 			System.err.println("Unable to set the number of child travellers to " + noOfChildren);
 		}
+		info("No. of children set to " + noOfChildren);
 	}
 
 	/**
@@ -166,8 +178,9 @@ public class FlightsPage extends Page {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Unable to set the number of Infant travellers to " + noOfInfants);
+			error("Unable to set the number of Infant travellers to " + noOfInfants);
 		}
+		info("No. of Infants set to " + noOfInfants);
 	}
 
 	/**
@@ -183,6 +196,7 @@ public class FlightsPage extends Page {
 			e.printStackTrace();
 			System.err.println("Could not select \"" + travelClass + "\" as the travel class");
 		}
+		info("Selected the traveller class - " + travelClass);
 	}
 
 	/**
@@ -194,7 +208,8 @@ public class FlightsPage extends Page {
 			browser.findElement(By.cssSelector("div[data-cy^='flightItem_']"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Could not search flights");
+			error("Could not search flights");
 		}
+		info("Flight search was successful");
 	}
 }
