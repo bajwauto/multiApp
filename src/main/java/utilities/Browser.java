@@ -1,5 +1,9 @@
 package utilities;
 
+import static utilities.Log.debug;
+import static utilities.Log.error;
+import static utilities.Log.info;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -70,6 +74,8 @@ public class Browser {
 	private By getStoredObjectLocator(String objectName) throws Exception {
 		By by = null;
 		String propertyNameValue = PropertiesFile.read(ORPath, objectName);
+		debug("The object \"" + objectName + "\" is stored in the OR with the property-value pair - "
+				+ propertyNameValue);
 		if (propertyNameValue != null) {
 			String property = propertyNameValue.split(":")[0].trim();
 			String value = propertyNameValue.split(":")[1].trim();
@@ -99,10 +105,12 @@ public class Browser {
 				by = By.tagName(value);
 				break;
 			default:
+				error("Invalid locator specified for the object \"" + objectName + "\" in the Object Repository");
 				throw new Exception(
 						"Invalid locator specified for the object \"" + objectName + "\" in the Object Repository");
 			}
 		} else {
+			error("The object \"" + objectName + "\" is not present in the Object Repository");
 			throw new Exception("The object \"" + objectName + "\" is not present in the Object Repository");
 		}
 		return by;
@@ -159,6 +167,7 @@ public class Browser {
 				driver.set(new ChromeDriver(chromeOptions));
 				break;
 			}
+			info("Launched the \"" + browserName + "\" browser");
 		}
 		actions.set(new Actions(driver()));
 	}
@@ -170,6 +179,7 @@ public class Browser {
 	 */
 	public void get(String url) {
 		driver().get(url);
+		info("Launched URL - " + url);
 	}
 
 	/**
@@ -178,6 +188,7 @@ public class Browser {
 	 */
 	public void maximize() {
 		driver().manage().window().maximize();
+		info("Maximized the browser");
 	}
 
 	/**
@@ -185,6 +196,7 @@ public class Browser {
 	 */
 	public void deleteCookies() {
 		driver().manage().deleteAllCookies();
+		debug("Deleted all cookies");
 	}
 
 	/**
@@ -225,10 +237,14 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public void click(WebElement element) throws Exception {
-		if (element != null)
+		if (element != null) {
 			element.click();
-		else
-			throw new Exception("Cannot click on a null object!!!");
+			debug("Click operation performed successfully on the object \"" + element.toString() + "\"");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot click on a null object!!!");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot click on a null object!!!");
+		}
+
 	}
 
 	/**
@@ -267,8 +283,11 @@ public class Browser {
 		if (element != null) {
 			element.sendKeys(Keys.chord(Keys.CONTROL, "A"));
 			element.sendKeys(text);
-		} else
-			throw new Exception("Cannot perform sendkeys opeartion on a null object");
+			debug("The text \"" + text + "\" was sent successfully to the object \"" + element.toString() + "\"");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot perform sendkeys opeartion on a null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot perform sendkeys opeartion on a null object");
+		}
 	}
 
 	/**
@@ -306,10 +325,15 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public String getText(WebElement element) throws Exception {
-		if (element != null)
-			return element.getText();
-		else
-			throw new Exception("Cannot fetch text of a null object");
+		String fetchedText;
+		if (element != null) {
+			fetchedText = element.getText();
+			debug("The text \"" + fetchedText + "\" was extracted from the object \"" + element.toString() + "\"");
+			return fetchedText;
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot fetch text of a null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot fetch text of a null object");
+		}
 	}
 
 	/**
@@ -322,10 +346,16 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public String getAttribute(WebElement element, String attribute) throws Exception {
-		if (element != null)
-			return element.getAttribute(attribute);
-		else
-			throw new Exception("Cannot fetch the attribute \"" + attribute + "\" of a null object");
+		String fetchedAttribute;
+		if (element != null) {
+			fetchedAttribute = element.getAttribute(attribute);
+			debug("The attribute's value \"" + attribute + "\" fetched from the object \"" + element.toString()
+					+ "\" is \"" + fetchedAttribute + "\"");
+			return fetchedAttribute;
+		} else {
+			throw new Exception(
+					">>NULL OBJECT ALERT<< Cannot fetch the attribute \"" + attribute + "\" of a null object");
+		}
 	}
 
 	/**
@@ -338,8 +368,10 @@ public class Browser {
 	public Rectangle getObjectBounds(WebElement element) throws Exception {
 		if (element != null)
 			return element.getRect();
-		else
-			throw new Exception("Cannot get the bounds of a null object");
+		else {
+			error(">>NULL OBJECT ALERT<< Cannot get the bounds of a null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot get the bounds of a null object");
+		}
 	}
 
 	/**
@@ -350,9 +382,12 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public void selectOptionFromList(WebElement element, String option) throws Exception {
-		if (element == null)
-			throw new Exception("Cannot select the option \"" + option + "\" from a null Drop down list object");
-		else {
+		if (element == null) {
+			error(">>NULL OBJECT ALERT<< Cannot select the option \"" + option
+					+ "\" from a null Drop down list object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot select the option \"" + option
+					+ "\" from a null Drop down list object");
+		} else {
 			Select select = new Select(element);
 			try {
 				select.selectByVisibleText(option);
@@ -361,6 +396,7 @@ public class Browser {
 					select.selectByValue(option);
 				} catch (NoSuchElementException e2) {
 					e2.printStackTrace();
+					error("Could not select the option \"" + option + "\" from the drop down box");
 					throw new Exception("Could not select the option \"" + option + "\" from the drop down box");
 				}
 			}
@@ -373,7 +409,9 @@ public class Browser {
 	 * @return - the current window's handle
 	 */
 	public String getWindowHandle() {
-		return driver().getWindowHandle();
+		String currenWindowHandle = driver().getWindowHandle();
+		debug("The currently active window's handle is \"" + currenWindowHandle + "\"");
+		return currenWindowHandle;
 	}
 
 	/**
@@ -394,6 +432,7 @@ public class Browser {
 	 */
 	public void switchToWindow(String windowHandle) {
 		driver().switchTo().window(windowHandle);
+		debug("Switched to the window/tab having the window handle - " + windowHandle);
 	}
 
 	/**
@@ -403,10 +442,13 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public void switchToFrame(WebElement element) throws Exception {
-		if (element != null)
+		if (element != null) {
 			driver().switchTo().frame(element);
-		else
-			throw new Exception("Cannot switch to a null frame");
+			debug("Switched the control to the frame \"" + element.toString() + "\"");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot switch to a null frame");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot switch to a null frame");
+		}
 	}
 
 	/**
@@ -415,7 +457,9 @@ public class Browser {
 	 * @return - the reference to the Alert
 	 */
 	private Alert switchToAlert() {
-		return driver().switchTo().alert();
+		Alert alert = driver().switchTo().alert();
+		debug("Switched the control to the active alert");
+		return alert;
 	}
 
 	/**
@@ -429,11 +473,14 @@ public class Browser {
 		switch (action.trim().toLowerCase()) {
 		case "accept":
 			alert.accept();
+			debug("The active alert was accepted");
 			break;
 		case "dismiss":
 			alert.dismiss();
+			debug("The active alert was dismissed");
 			break;
 		default:
+			error("The action \"" + action + "\" is not a valid operation on the alert");
 			throw new Exception("The action \"" + action + "\" is not a valid operation on the alert");
 		}
 	}
@@ -447,10 +494,16 @@ public class Browser {
 	 * @param yOffset - vertical offset(in pixels)
 	 */
 	public void dragAndDropBy(WebElement element, int xOffset, int yOffset) throws Exception {
-		if (element != null)
+		if (element != null) {
 			actions().dragAndDropBy(element, xOffset, yOffset).build().perform();
-		else
-			throw new Exception("Cannot drag a null object");
+			debug("The object \"" + element.toString()
+					+ "\" was dragged and dropped to the position which has the horizontal offset of " + xOffset
+					+ " pixels and vertical offset of " + yOffset
+					+ " pixels w.r.t. the current position of the object");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot drag a null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot drag a null object");
+		}
 	}
 
 	/**
@@ -461,10 +514,13 @@ public class Browser {
 	 *                    will be dropped
 	 */
 	public void dragAndDrop(WebElement source, WebElement destination) throws Exception {
-		if (source != null && destination != null)
+		if (source != null && destination != null) {
 			actions().dragAndDrop(source, destination).build().perform();
-		else
-			throw new Exception("Cannot perform drag and drop operation on null objects");
+			debug("The object \"" + source + "\" was dragged and dropped on top of the object \"" + destination + "\"");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot perform drag and drop operation on null objects");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot perform drag and drop operation on null objects");
+		}
 	}
 
 	/**
@@ -474,10 +530,13 @@ public class Browser {
 	 * @throws Exception
 	 */
 	public void hoverMouse(WebElement element) throws Exception {
-		if (element != null)
+		if (element != null) {
 			actions().moveToElement(element);
-		else
-			throw new Exception("Cannot move the mouse pointer on the top of the null object");
+			debug("The mouse pointer was moved to the center point of the object \"" + element.toString() + "\"");
+		} else {
+			error(">>NULL OBJECT ALERT<< Cannot move the mouse pointer on the top of the null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot move the mouse pointer on the top of the null object");
+		}
 	}
 
 	/**
@@ -489,6 +548,7 @@ public class Browser {
 	public void takeVisibleScreenshot(String screenshotPath) throws IOException {
 		File file = ((TakesScreenshot) driver()).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(file, new File(screenshotPath));
+		info("Screenshot of the visible area was captured at path - " + screenshotPath);
 	}
 
 	/**
@@ -502,8 +562,10 @@ public class Browser {
 		if (element != null) {
 			File file = ((TakesScreenshot) element).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(file, new File(screenshotPath));
+			info("Screenshot of the object \"" + element.toString() + "\" was captured at path - " + screenshotPath);
 		} else {
-			throw new Exception("Cannot capture the screenshot of a null object");
+			error(">>NULL OBJECT ALERT<< Cannot capture the screenshot of a null object");
+			throw new Exception(">>NULL OBJECT ALERT<< Cannot capture the screenshot of a null object");
 		}
 	}
 
@@ -518,6 +580,7 @@ public class Browser {
 		Screenshot screenshot = new AShot().coordsProvider(new WebDriverCoordsProvider())
 				.shootingStrategy(ShootingStrategies.viewportPasting(500)).takeScreenshot(driver());
 		ImageIO.write(screenshot.getImage(), "jpg", new File(screenshotPath));
+		info("Screenshot of the full page was captured at path - " + screenshotPath);
 	}
 
 	/**
@@ -526,6 +589,7 @@ public class Browser {
 	 */
 	public void close() {
 		driver().close();
+		info("Closed the current window/tab");
 	}
 
 	/**
@@ -534,5 +598,6 @@ public class Browser {
 	 */
 	public void quit() {
 		driver().quit();
+		info("Closed all the windows/tabs");
 	}
 }
