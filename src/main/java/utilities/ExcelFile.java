@@ -139,7 +139,7 @@ public class ExcelFile {
 	 *         Hashmap which maps column's header with the column's value
 	 * @throws IOException
 	 */
-	public List<Map<String, Object>> read() throws IOException {
+	public List<Map<String, Object>> read() throws Exception {
 		List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 		if (fileExists) {
 			FileInputStream fis = new FileInputStream(file);
@@ -166,6 +166,8 @@ public class ExcelFile {
 					}
 				}
 			}
+		} else {
+			throw new Exception("File does not exist. Data cannot be read");
 		}
 		return data;
 	}
@@ -180,15 +182,16 @@ public class ExcelFile {
 	 *         the column's data for the given row
 	 * @throws IOException
 	 */
-	public Map<String, Object> read(int row) throws IOException {
+	public Map<String, Object> read(int row) throws Exception {
 		List<Map<String, Object>> data = read();
 		Map<String, Object> rowData = new LinkedHashMap<String, Object>();
 		if (data == null)
 			rowData = null;
 		else {
-			if (row > data.size())
+			if (row > data.size()) {
 				rowData = null;
-			else
+				throw new Exception("Row number cannot be greater than total number of data rows present in the sheet");
+			} else
 				rowData = data.get(row - 1);
 		}
 		return rowData;
@@ -205,7 +208,7 @@ public class ExcelFile {
 	 * @return - data fetched from the given column in the specified row
 	 * @throws IOException
 	 */
-	public Object read(int row, String columnName) throws IOException {
+	public Object read(int row, String columnName) throws Exception {
 		Object data = null;
 		Map<String, Object> rowData = read(row);
 		if (rowData != null)
