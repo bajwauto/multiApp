@@ -1,6 +1,7 @@
 package com.goibibo.pages;
 
 import utilities.Browser;
+import static utilities.Log.*;
 
 public class TopMenu {
 	Browser browser;
@@ -43,9 +44,10 @@ public class TopMenu {
 				break;
 			}
 		} catch (Exception e) {
-			System.err.println("Unable to click on Top menu item - " + menuItem);
+			error("Unable to click on Top menu item - " + menuItem);
 			e.printStackTrace();
 		}
+		info("Opened the \"" + menuItem + "\" section");
 	}
 
 	/**
