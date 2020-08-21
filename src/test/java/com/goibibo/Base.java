@@ -1,13 +1,16 @@
 package com.goibibo;
 
+import static utilities.Log.error;
+import static utilities.Log.info;
+
 import java.io.File;
-import static utilities.Log.*;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -18,6 +21,11 @@ import utilities.Generic;
 
 public class Base {
 	public Browser browser;
+
+	@BeforeSuite
+	public void suiteSetup() {
+		System.setProperty("org.uncommons.reportng.escape-output", "false");
+	}
 
 	@BeforeMethod(alwaysRun = true)
 	@Parameters("browser")
