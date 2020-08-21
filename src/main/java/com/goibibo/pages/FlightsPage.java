@@ -13,8 +13,9 @@ public class FlightsPage extends Page {
 	 * trip/Multicity
 	 * 
 	 * @param tripType - type of trip(One way/Round trip/Multicity)
+	 * @throws Exception
 	 */
-	public void selectTripType(String tripType) {
+	public void selectTripType(String tripType) throws Exception {
 		try {
 			switch (tripType.toLowerCase()) {
 			case "oneway":
@@ -34,8 +35,7 @@ public class FlightsPage extends Page {
 				throw new Exception("Invalid trip type - " + tripType);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Unable to select the trip type \"" + tripType + "\"");
+			throw new Exception("Unable to select the trip type \"" + tripType + "\"", e);
 		}
 		info("Selected the trip type - " + tripType);
 	}
@@ -45,13 +45,12 @@ public class FlightsPage extends Page {
 	 * 
 	 * @param sourceCity - the source city
 	 */
-	public void selectSourceCity(String sourceCity) {
+	public void selectSourceCity(String sourceCity) throws Exception {
 		try {
 			browser.sendkeys("from_Textbox", sourceCity);
 			browser.click(By.xpath("//li[@role='option']//span[contains(text(),'" + sourceCity + "')]"));
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Could not set \"" + sourceCity + "\" as the source city of the trip");
+			throw new Exception("Could not set \"" + sourceCity + "\" as the source city of the trip", e);
 		}
 		info("Selected the Source city - " + sourceCity);
 	}
@@ -61,13 +60,12 @@ public class FlightsPage extends Page {
 	 * 
 	 * @param destinationCity - the destination city
 	 */
-	public void selectDestinationCity(String destinationCity) {
+	public void selectDestinationCity(String destinationCity) throws Exception {
 		try {
 			browser.sendkeys("to_Textbox", destinationCity);
 			browser.click(By.xpath("//li[@role='option']//span[contains(text(),'" + destinationCity + "')]"));
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Could not set \"" + destinationCity + "\" as the destination city of the trip");
+			throw new Exception("Could not set \"" + destinationCity + "\" as the destination city of the trip", e);
 		}
 		info("Selected the Destination city - " + destinationCity);
 	}
@@ -82,7 +80,6 @@ public class FlightsPage extends Page {
 			browser.click("nextMonth_Button");
 		}
 		if (!actualMY.equalsIgnoreCase(expectedMY)) {
-			error("Could not navigate to the desired Month in the calendar");
 			throw new Exception("Could not navigate to the desired Month in the calendar");
 		} else {
 			browser.click(By.xpath("//div[@class='DayPicker-Day']/div[text()='" + expectedD + "']"));
@@ -95,13 +92,12 @@ public class FlightsPage extends Page {
 	 * @param date   - date to be set as the trip's departure date
 	 * @param format - provided departure date format
 	 */
-	public void setDepartureDate(String date, String format) {
+	public void setDepartureDate(String date, String format) throws Exception {
 		try {
 			browser.click("departure_Calendar");
 			setCalendarDate(date, format);
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Could not set \"" + date + "\" as the departure date");
+			throw new Exception("Could not set \"" + date + "\" as the departure date", e);
 		}
 		info("Selected the Deprature Date - " + date);
 	}
@@ -112,13 +108,12 @@ public class FlightsPage extends Page {
 	 * @param date   - date to be set as the trip's return date
 	 * @param format - provided return date format
 	 */
-	public void setReturnDate(String date, String format) {
+	public void setReturnDate(String date, String format) throws Exception {
 		try {
 			browser.click("return_Calendar");
 			setCalendarDate(date, format);
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Could not set \"" + date + "\" as the return date");
+			throw new Exception("Could not set \"" + date + "\" as the return date", e);
 		}
 		info("Selected the Return Date - " + date);
 	}
@@ -128,7 +123,7 @@ public class FlightsPage extends Page {
 	 * 
 	 * @param noOfAdults - no. of adults traveling
 	 */
-	public void setAdultTravellers(int noOfAdults) {
+	public void setAdultTravellers(int noOfAdults) throws Exception {
 		try {
 			String currentAdultCount;
 			browser.click("travellers_Element");
@@ -137,8 +132,7 @@ public class FlightsPage extends Page {
 				browser.click("addAdult_Element");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Unable to set the number of adult travellers to " + noOfAdults);
+			throw new Exception("Unable to set the number of adult travellers to " + noOfAdults, e);
 		}
 		info("No. of adult travellers set to " + noOfAdults);
 	}
@@ -148,7 +142,7 @@ public class FlightsPage extends Page {
 	 * 
 	 * @param noOfAdults - no. of adults traveling
 	 */
-	public void setChildTravellers(int noOfChildren) {
+	public void setChildTravellers(int noOfChildren) throws Exception {
 		try {
 			String currentChildrenCount;
 			browser.click("travellers_Element");
@@ -157,8 +151,7 @@ public class FlightsPage extends Page {
 				browser.click("addChild_Element");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to set the number of child travellers to " + noOfChildren);
+			throw new Exception("Unable to set the number of child travellers to " + noOfChildren, e);
 		}
 		info("No. of children set to " + noOfChildren);
 	}
@@ -168,7 +161,7 @@ public class FlightsPage extends Page {
 	 * 
 	 * @param noOfAdults - no. of infants traveling
 	 */
-	public void setInfantTravellers(int noOfInfants) {
+	public void setInfantTravellers(int noOfInfants) throws Exception {
 		try {
 			String currentInfantCount;
 			browser.click("travellers_Element");
@@ -177,8 +170,7 @@ public class FlightsPage extends Page {
 				browser.click("addInfant_Element");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Unable to set the number of Infant travellers to " + noOfInfants);
+			throw new Exception("Unable to set the number of Infant travellers to " + noOfInfants, e);
 		}
 		info("No. of Infants set to " + noOfInfants);
 	}
@@ -189,12 +181,11 @@ public class FlightsPage extends Page {
 	 * @param travelClass - travel class like Economy/Business/First class/Premium
 	 *                    Economy
 	 */
-	public void selectTravelClass(String travelClass) {
+	public void selectTravelClass(String travelClass) throws Exception {
 		try {
 			browser.selectOptionFromList(browser.FindElement("travelClass_List"), travelClass);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Could not select \"" + travelClass + "\" as the travel class");
+			throw new Exception("Could not select \"" + travelClass + "\" as the travel class", e);
 		}
 		info("Selected the traveller class - " + travelClass);
 	}
@@ -202,13 +193,12 @@ public class FlightsPage extends Page {
 	/**
 	 * This method is used to click on the Search Button
 	 */
-	public void searchFlights() {
+	public void searchFlights() throws Exception {
 		try {
 			browser.click("search_Button");
 			browser.findElement(By.cssSelector("div[data-cy^='flightItem_']"));
 		} catch (Exception e) {
-			e.printStackTrace();
-			error("Could not search flights");
+			throw new Exception("Could not search flights", e);
 		}
 		info("Flight search was successful");
 	}
