@@ -12,11 +12,11 @@ public class TopMenu {
 
 	/**
 	 * This method is used to perform click operation on a menu item(like Flights,
-	 * Casb, Visa etc) from the top menu
+	 * Cabs, Visa etc) from the top menu
 	 * 
 	 * @param menuItem - menu item to be clicked
 	 */
-	private void gotoMenu(String menuItem) {
+	private void gotoMenu(String menuItem) throws Exception {
 		try {
 			switch (menuItem.toLowerCase()) {
 			case "flights":
@@ -45,7 +45,7 @@ public class TopMenu {
 			}
 		} catch (Exception e) {
 			error("Unable to click on Top menu item - " + menuItem);
-			e.printStackTrace();
+			throw new Exception("Unable to click on Top menu item - " + menuItem, e);
 		}
 		info("Opened the \"" + menuItem + "\" section");
 	}
@@ -55,7 +55,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the FlightsPage Instance
 	 */
-	public FlightsPage openFlightsMenu() {
+	public FlightsPage openFlightsMenu() throws Exception {
 		gotoMenu("Flights");
 		return new FlightsPage();
 	}
@@ -65,7 +65,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the HotelsPage Instance
 	 */
-	public HotelsPage openHotelsMenu() {
+	public HotelsPage openHotelsMenu() throws Exception {
 		gotoMenu("Hotels");
 		return new HotelsPage();
 	}
@@ -75,7 +75,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the GoStaysHotelsPage Instance
 	 */
-	public GoStaysHotelsPage openGoStaysHotelsMenu() {
+	public GoStaysHotelsPage openGoStaysHotelsMenu() throws Exception {
 		gotoMenu("Go Stays Hotels");
 		return new GoStaysHotelsPage();
 	}
@@ -85,7 +85,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the BusPage Instance
 	 */
-	public BusPage openBusMenu() {
+	public BusPage openBusMenu() throws Exception {
 		gotoMenu("Bus");
 		return new BusPage();
 	}
@@ -95,7 +95,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the IRCTCTrainsPage Instance
 	 */
-	public IRCTCTrainsPage openIRCTCTrainsMenu() {
+	public IRCTCTrainsPage openIRCTCTrainsMenu() throws Exception {
 		gotoMenu("IRCTC Trains");
 		return new IRCTCTrainsPage();
 	}
@@ -105,7 +105,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the CabsPage Instance
 	 */
-	public CabsPage openCabsMenu() {
+	public CabsPage openCabsMenu() throws Exception {
 		gotoMenu("Cabs");
 		return new CabsPage();
 	}
@@ -115,7 +115,7 @@ public class TopMenu {
 	 * 
 	 * @return - reference to the VisaPage Instance
 	 */
-	public VisaPage openVisaMenu() {
+	public VisaPage openVisaMenu() throws Exception {
 		gotoMenu("Visa");
 		return new VisaPage();
 	}

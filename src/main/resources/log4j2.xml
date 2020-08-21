@@ -18,12 +18,22 @@
 		<File name="html" fileName="${logDirectory}/${log}.html" append="false">
 			<HTMLLayout charset="UTF-8" fontSize="XSMALL" title="Last Execution Log" />
 		</File>
+		<Routing name="router">
+			<Routes pattern="$${ctx:thread}">
+				<Route>
+					<File name="${ctx:thread}" fileName="${logDirectory}/thread_Level_Logs/${ctx:thread}.html" append="false">
+						<HTMLLayout charset="UTF-8" fontSize="XSMALL" title="Last Execution Log - ${ctx:thread}" />
+					</File>
+				</Route>
+			</Routes>
+		</Routing>
 	</Appenders>
 	<Loggers>
 		<Root level="TRACE">
 			<AppenderRef ref="console" />
 			<AppenderRef ref="file" level="DEBUG" />
 			<AppenderRef ref="html" level="INFO" />
+			<AppenderRef ref="router" level="INFO" />
 		</Root>
 	</Loggers>
 </Configuration>
