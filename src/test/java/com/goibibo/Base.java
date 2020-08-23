@@ -46,8 +46,9 @@ public class Base {
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	@Parameters({ "browser", "url" })
-	public void testSetup(@Optional("chrome") String browserName, String url, Method method) {
+	@Parameters({ "executeTestsRemotely", "browser", "url" })
+	public void testSetup(@Optional("false") String executeTestsRemotely, @Optional("chrome") String browserName,
+			String url, Method method) {
 		if (enableScreenshots) {
 			currentSSPath.set(baseScreenshotPath + File.separator + method.getName());
 			Generic.createDirectory(currentSSPath.get());
@@ -56,7 +57,7 @@ public class Base {
 			ssCounter.set(0);
 		}
 		browser = Browser.getInstance();
-		browser.set(browserName, false);
+		browser.set(browserName, Boolean.parseBoolean(executeTestsRemotely.trim()));
 		browser.maximize();
 		browser.deleteCookies();
 		browser.get(url);

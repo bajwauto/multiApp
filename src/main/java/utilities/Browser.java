@@ -6,15 +6,19 @@ import static utilities.Log.info;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rectangle;
@@ -25,7 +29,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -42,6 +49,7 @@ public class Browser {
 	private static Browser browserInstance = null;
 	private static ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
 	private static ThreadLocal<Actions> actions = new ThreadLocal<Actions>();
+	private static ThreadLocal<JavascriptExecutor> jse = new ThreadLocal<JavascriptExecutor>();
 	private ThreadLocal<Boolean> disableVisibilityCheck = new ThreadLocal<Boolean>() {
 		@Override
 		protected Boolean initialValue() {
@@ -64,6 +72,10 @@ public class Browser {
 		return actions.get();
 	}
 
+	private JavascriptExecutor jse() {
+		return jse.get();
+	}
+
 	/**
 	 * This method is used to get the reference to the locator of an object which is
 	 * stored in the Object Repository
@@ -77,8 +89,9 @@ public class Browser {
 		debug("The object \"" + objectName + "\" is stored in the OR with the property-value pair - "
 				+ propertyNameValue);
 		if (propertyNameValue != null) {
-			String property = propertyNameValue.split(":")[0].trim();
-			String value = propertyNameValue.split(":")[1].trim();
+			List<String> matchesNGroups = Generic.getRegexMatchesAndGroups(propertyNameValue, "^([^:]+):(.+)$").get(0);
+			String property = matchesNGroups.get(1);
+			String value = matchesNGroups.get(2);
 			switch (property.toLowerCase()) {
 			case "xpath":
 				by = By.xpath(value);
@@ -168,8 +181,42 @@ public class Browser {
 				break;
 			}
 			info("Launched the \"" + browserName + "\" browser");
+		} else {
+			switch (browserName.trim().toLowerCase()) {
+			case "edge":
+				DesiredCapabilities ecapabilities = DesiredCapabilities.edge();
+				try {
+					driver.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), ecapabilities));
+				} catch (Exception e) {
+					e.printStackTrace();
+					error("Could not connect to the Remote Webdriver");
+				}
+				break;
+			case "firefox":
+				FirefoxOptions ffOptions = new FirefoxOptions();
+				try {
+					driver.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), ffOptions));
+				} catch (Exception e) {
+					e.printStackTrace();
+					error("Could not connect to the Remote Webdriver");
+				}
+				break;
+			case "chrome":
+			default:
+				ChromeOptions chromeOptions = new ChromeOptions();
+				chromeOptions.addArguments("--disable-notifications");
+				chromeOptions.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
+				chromeOptions.setExperimentalOption("useAutomationExtension", false);
+				try {
+					driver.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), chromeOptions));
+				} catch (Exception e) {
+					e.printStackTrace();
+					error("Could not connect to the Remote Webdriver");
+				}
+			}
 		}
 		actions.set(new Actions(driver()));
+		jse.set((JavascriptExecutor) driver());
 	}
 
 	/**
@@ -200,6 +247,24 @@ public class Browser {
 	}
 
 	/**
+	 * This method is used to wait for a page to get loaded before waitTimeOut
+	 * expires
+	 * 
+	 * @throws Exception
+	 */
+	public void waitForPageToGetLoaded() throws Exception {
+		WebDriverWait wait = new WebDriverWait(driver(), waitTimeOut);
+		Boolean pageLoaded;
+		pageLoaded = wait.until(new Function<WebDriver, Boolean>() {
+			public Boolean apply(WebDriver driverRef) {
+				return ((String) (jse().executeScript("return document.readyState"))).equalsIgnoreCase("complete");
+			}
+		});
+		if (pageLoaded != true)
+			throw new Exception("Page not loaded properly");
+	}
+
+	/**
 	 * This method is used to find an element on the web page using a reference to
 	 * its locator
 	 * 
@@ -210,9 +275,9 @@ public class Browser {
 		WebElement element = null;
 		WebDriverWait wait = new WebDriverWait(driver(), waitTimeOut);
 		element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
-		if (!disableVisibilityCheck.get())
+		if (!disableVisibilityCheck.get()) {
 			element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-		else
+		} else
 			disableVisibilityCheck(false);
 		return element;
 	}
@@ -225,7 +290,7 @@ public class Browser {
 	 * @return - reference to the element found
 	 * @throws Exception
 	 */
-	public WebElement FindElement(String objectName) throws Exception {
+	public WebElement findElement(String objectName) throws Exception {
 		By by = getStoredObjectLocator(objectName);
 		return findElement(by);
 	}

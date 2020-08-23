@@ -127,7 +127,7 @@ public class FlightsPage extends Page {
 		try {
 			String currentAdultCount;
 			browser.click("travellers_Element");
-			while (!(currentAdultCount = browser.getAttribute(browser.FindElement("adult_Textbox"), "value"))
+			while (!(currentAdultCount = browser.getAttribute(browser.findElement("adult_Textbox"), "value"))
 					.equalsIgnoreCase(noOfAdults + "")) {
 				browser.click("addAdult_Element");
 			}
@@ -146,7 +146,7 @@ public class FlightsPage extends Page {
 		try {
 			String currentChildrenCount;
 			browser.click("travellers_Element");
-			while (!(currentChildrenCount = browser.getAttribute(browser.FindElement("child_Textbox"), "value"))
+			while (!(currentChildrenCount = browser.getAttribute(browser.findElement("child_Textbox"), "value"))
 					.equalsIgnoreCase(noOfChildren + "")) {
 				browser.click("addChild_Element");
 			}
@@ -165,7 +165,7 @@ public class FlightsPage extends Page {
 		try {
 			String currentInfantCount;
 			browser.click("travellers_Element");
-			while (!(currentInfantCount = browser.getAttribute(browser.FindElement("infant_Textbox"), "value"))
+			while (!(currentInfantCount = browser.getAttribute(browser.findElement("infant_Textbox"), "value"))
 					.equalsIgnoreCase(noOfInfants + "")) {
 				browser.click("addInfant_Element");
 			}
@@ -183,7 +183,7 @@ public class FlightsPage extends Page {
 	 */
 	public void selectTravelClass(String travelClass) throws Exception {
 		try {
-			browser.selectOptionFromList(browser.FindElement("travelClass_List"), travelClass);
+			browser.selectOptionFromList(browser.findElement("travelClass_List"), travelClass);
 		} catch (Exception e) {
 			throw new Exception("Could not select \"" + travelClass + "\" as the travel class", e);
 		}
