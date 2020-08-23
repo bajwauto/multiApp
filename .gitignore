@@ -1,5 +1,7 @@
 test-output/
 target/
 logs/
+reports/
+screenshots/
 .settings
 .project
