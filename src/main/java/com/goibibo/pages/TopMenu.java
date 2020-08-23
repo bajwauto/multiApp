@@ -97,6 +97,8 @@ public class TopMenu {
 	 */
 	public IRCTCTrainsPage openIRCTCTrainsMenu() throws Exception {
 		gotoMenu("IRCTC Trains");
+		browser.waitForPageToGetLoaded();
+		browser.findElement("train_From_Textbox");
 		return new IRCTCTrainsPage();
 	}
 
