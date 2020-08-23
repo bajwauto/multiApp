@@ -13,10 +13,13 @@ import com.goibibo.pages.HomePage;
 import utilities.customAnnotations.Retry;
 
 public class Flights extends Base {
+
 	@Retry
 	@Test(dataProvider = "excel", priority = 1, enabled = true)
 	public void oneWayFlightSearch(Map<String, Object> testData) throws Exception {
 		try {
+			int currentIteration = ((Double) testData.get("sNo")).intValue();
+			datasetRunning.set(currentIteration);
 			String sourceCity = (String) testData.get("sourceCity");
 			String destinationCity = (String) testData.get("destinationCity");
 			String departureDate = (String) testData.get("departureDate");
@@ -34,7 +37,9 @@ public class Flights extends Base {
 			flightsPage.setChildTravellers(children);
 			flightsPage.setInfantTravellers(infants);
 			flightsPage.selectTravelClass(travelClass);
+			takeScreenshot();
 			flightsPage.searchFlights();
+			takeFullPageScreenshot();
 		} catch (Exception e) {
 			e.printStackTrace();
 			error(e.getMessage());
@@ -46,6 +51,8 @@ public class Flights extends Base {
 	@Test(dataProvider = "excel", priority = 2, enabled = true)
 	public void roundTripFlightSearch(Map<String, Object> testData) throws Exception {
 		try {
+			int currentIteration = ((Double) testData.get("sNo")).intValue();
+			datasetRunning.set(currentIteration);
 			String sourceCity = (String) testData.get("sourceCity");
 			String destinationCity = (String) testData.get("destinationCity");
 			String departureDate = (String) testData.get("departureDate");
@@ -65,7 +72,9 @@ public class Flights extends Base {
 			flightsPage.setChildTravellers(children);
 			flightsPage.setInfantTravellers(infants);
 			flightsPage.selectTravelClass(travelClass);
+			takeScreenshot();
 			flightsPage.searchFlights();
+			takeFullPageScreenshot();
 		} catch (Exception e) {
 			e.printStackTrace();
 			error(e.getMessage());

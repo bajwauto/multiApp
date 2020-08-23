@@ -5,9 +5,11 @@ import static utilities.Log.info;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -20,21 +22,44 @@ import utilities.ExcelFile;
 import utilities.Generic;
 
 public class Base {
-	public Browser browser;
+	public static Browser browser;
+	public static String timeStampFolder = Generic.getFormattedDate(new Date(),
+			"dd.MM.yy" + File.separator + "hh.mm.ss a");
+	public static Boolean generateReports;
+	protected static String baseScreenshotPath = Generic.getAbsolutePath("screenshots") + File.separator
+			+ timeStampFolder;
+	protected static boolean enableScreenshots;
+	public static ThreadLocal<Integer> datasetRunning = new ThreadLocal<Integer>();
+	protected static ThreadLocal<Integer> ssCounter = new ThreadLocal<Integer>();
+	public static ThreadLocal<String> currentSSPath = new ThreadLocal<String>() {
+		@Override
+		protected String initialValue() {
+			return baseScreenshotPath;
+		}
+	};
 
-	@BeforeSuite
-	public void suiteSetup() {
+	@Parameters("enableScreenshots")
+	@BeforeSuite(alwaysRun = true)
+	public void suiteSetup(@Optional("true") String captureScreenshots) {
 		System.setProperty("org.uncommons.reportng.escape-output", "false");
+		enableScreenshots = Boolean.parseBoolean(captureScreenshots);
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	@Parameters("browser")
-	public void testSetup(@Optional("chrome") String browserName) {
+	@Parameters({ "browser", "url" })
+	public void testSetup(@Optional("chrome") String browserName, String url, Method method) {
+		if (enableScreenshots) {
+			currentSSPath.set(baseScreenshotPath + File.separator + method.getName());
+			Generic.createDirectory(currentSSPath.get());
+			currentSSPath.set(currentSSPath.get() + File.separator + "DataSetyyy_SSxxx.jpg");
+			datasetRunning.set(1);
+			ssCounter.set(0);
+		}
 		browser = Browser.getInstance();
 		browser.set(browserName, false);
 		browser.maximize();
 		browser.deleteCookies();
-		browser.get("https://www.goibibo.com");
+		browser.get(url);
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -42,7 +67,7 @@ public class Base {
 		browser.quit();
 	}
 
-	@DataProvider(name = "excel", parallel = false)
+	@DataProvider(name = "excel", parallel = true)
 	public Object[][] getTestDataFromExcel(Method method) {
 		Object[][] testData;
 		String dataSheetPath = Generic.getAbsolutePath("datasheets") + File.separator + method.getName() + ".xlsx";
@@ -59,5 +84,31 @@ public class Base {
 		}
 		info("The data for the test \"" + method.getName() + "\" was read from the file - " + dataSheetPath);
 		return testData;
+	}
+
+	protected static void takeScreenshot() throws Exception {
+		if (enableScreenshots) {
+			ssCounter.set(ssCounter.get() + 1);
+			browser.takeVisibleScreenshot(currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
+					.replaceAll("xxx", "" + ssCounter.get()));
+		}
+	}
+
+	protected static void takeScreenshot(WebElement element) throws Exception {
+		if (enableScreenshots) {
+			ssCounter.set(ssCounter.get() + 1);
+			currentSSPath.set(currentSSPath.get().replaceAll("xxx", "" + ssCounter.get()));
+			browser.takeVisibleScreenshot(element, currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
+					.replaceAll("xxx", "" + ssCounter.get()));
+		}
+	}
+
+	protected static void takeFullPageScreenshot() throws Exception {
+		if (enableScreenshots) {
+			ssCounter.set(ssCounter.get() + 1);
+			currentSSPath.set(currentSSPath.get().replaceAll("xxx", "" + ssCounter.get()));
+			browser.takeFullPageScreenshot(currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
+					.replaceAll("xxx", "" + ssCounter.get()));
+		}
 	}
 }

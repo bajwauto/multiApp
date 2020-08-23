@@ -124,6 +124,9 @@ public class Generic {
 		case "datasheets":
 			subPath = getPath("testresources") + "/datasheets";
 			break;
+		case "extentconfig":
+			subPath = getPath("mainresources") + "/extentConfiguration.xml";
+			break;
 		default:
 			subPath = "";
 		}

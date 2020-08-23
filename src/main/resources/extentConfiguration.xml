@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extentreports>
+	<configuration>
+		<theme>dark</theme>
+		<protocol>https</protocol>
+		<documentTitle>Test Execution Report</documentTitle>
+		<reportName>Execution Report</reportName>
+	</configuration>
+</extentreports>

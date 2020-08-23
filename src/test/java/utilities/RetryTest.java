@@ -18,7 +18,6 @@ public class RetryTest implements IRetryAnalyzer {
 	@Override
 	public boolean retry(ITestResult result) {
 		Retry retry = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Retry.class);
-		System.out.println(timesRetried.get() + " -- " + retry.value());
 		if (retry != null && timesRetried.get() < retry.value()) {
 			timesRetried.set(timesRetried.get() + 1);
 			info("Retrying(Attempt " + timesRetried.get() + ") the test \"" + result.getMethod().getMethodName()

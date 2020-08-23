@@ -56,7 +56,7 @@ public class XMLFile {
 	 * 
 	 * @param xml        - String containing the XML data
 	 * @param xPathQuery - XPath query for fetching the desired data
-	 * @return - String containing the desired data
+	 * @return - List of Strings containing the desired data
 	 */
 	public static List<String> read(String xml, String xPathQuery) {
 		Document document = getDocument(xml);
@@ -78,7 +78,7 @@ public class XMLFile {
 	 * 
 	 * @param xmlFile    - reference to the file containing the XML data
 	 * @param xPathQuery - XPath query for fetching the desired data
-	 * @return - String containing the desired data
+	 * @return - List of Strings containing the desired data
 	 */
 	public static List<String> read(File xmlFile, String xPathQuery) {
 		Document document = getDocument(xmlFile);
