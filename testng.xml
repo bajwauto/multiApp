@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Parallel Tests" parallel="methods" thread-count="2" data-provider-thread-count="2">
+	<groups>
+		<run>
+			<include name="full-blown" />
+		</run>
+	</groups>
 	<parameter name="application" value="" />
 	<parameter name="developer" value="Bajwa Automation" />
 	<parameter name="url" value="" />
+	<parameter name="executeTestsRemotely" value="false" />
 	<parameter name="browser" value="chrome" />
 	<parameter name="enableScreenshots" value="true" />
 	<parameter name="generateReports" value="true" />
@@ -12,11 +18,12 @@
 		<listener class-name="org.uncommons.reportng.HTMLReporter" />
 		<listener class-name="utilities.TestAnnotationTransformer" />
 	</listeners>
-	<test name="Flights">
+	<test name="GoIbibo Testing">
 		<parameter name="application" value="GoIbibo" />
 		<parameter name="url" value="https://www.goibibo.com/" />
 		<classes>
 			<class name="com.goibibo.Flights" />
+			<class name="com.goibibo.Trains" />
 		</classes>
 	</test>
 </suite> <!-- Suite -->
