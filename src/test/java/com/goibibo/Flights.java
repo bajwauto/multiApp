@@ -12,6 +12,7 @@ import com.goibibo.pages.HomePage;
 
 import utilities.customAnnotations.Retry;
 
+@Test(groups = { "flights", "full-blown" })
 public class Flights extends Base {
 
 	@Retry
