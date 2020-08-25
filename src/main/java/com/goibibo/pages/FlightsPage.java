@@ -193,13 +193,16 @@ public class FlightsPage extends Page {
 	/**
 	 * This method is used to click on the Search Button
 	 */
-	public void searchFlights() throws Exception {
+	public FlightResultsPage searchFlights() throws Exception {
 		try {
 			browser.click("search_Button");
 			browser.findElement(By.cssSelector("div[data-cy^='flightItem_']"));
+			browser.scrollToPageBottom(200);
+			browser.scrollToPageTop();
 		} catch (Exception e) {
 			throw new Exception("Could not search flights", e);
 		}
 		info("Flight search was successful");
+		return new FlightResultsPage();
 	}
 }
