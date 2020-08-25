@@ -7,10 +7,10 @@ import static utilities.Log.info;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -20,6 +20,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.TakesScreenshot;
@@ -34,7 +35,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -64,7 +67,7 @@ public class Browser {
 	private Browser() {
 	}
 
-	private WebDriver driver() {
+	public WebDriver driver() {
 		return driver.get();
 	}
 
@@ -265,6 +268,33 @@ public class Browser {
 	}
 
 	/**
+	 * This method is used to scroll to the bottom of the webpage
+	 */
+	public void scrollToPageBottom() {
+		jse().executeScript("window.scrollTo(0, document.body.scrollHeight)");
+	}
+
+	/**
+	 * This method is used to scroll to the bottom of the page in small steps
+	 * 
+	 * @param pixels - size of each step
+	 */
+	public void scrollToPageBottom(long pixels) {
+		long currentHeight, previousHeight = -1;
+		while ((currentHeight = (long) jse().executeScript("return window.pageYOffset")) != previousHeight) {
+			previousHeight = currentHeight;
+			jse().executeScript("window.scrollBy(0," + pixels + ")");
+		}
+	}
+
+	/**
+	 * This method is used to scroll to the page top
+	 */
+	public void scrollToPageTop() {
+		jse().executeScript("window.scrollTo(0,0)");
+	}
+
+	/**
 	 * This method is used to find an element on the web page using a reference to
 	 * its locator
 	 * 
@@ -293,6 +323,34 @@ public class Browser {
 	public WebElement findElement(String objectName) throws Exception {
 		By by = getStoredObjectLocator(objectName);
 		return findElement(by);
+	}
+
+	/**
+	 * This method is used to find all the elements identified by the provided
+	 * locator on the web page
+	 * 
+	 * @param by - reference to the locator to the object(s)
+	 * @return - List of Objects identified by the given locator
+	 */
+	public List<WebElement> findElements(By by) {
+		List<WebElement> elements = null;
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver()).withTimeout(Duration.ofSeconds(waitTimeOut))
+				.pollingEvery(Duration.ofSeconds(2)).ignoring(NoSuchElementException.class);
+		elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+		return elements;
+	}
+
+	/**
+	 * This method is used to find all the elements on web page which can be
+	 * identified by the provided property holder mentioned in the Object Repository
+	 * 
+	 * @param objectName - name of the property holder as in OR
+	 * @return - List of Objects identified
+	 * @throws Exception
+	 */
+	public List<WebElement> findElements(String objectName) throws Exception {
+		By by = getStoredObjectLocator(objectName);
+		return findElements(by);
 	}
 
 	/**
@@ -456,10 +514,10 @@ public class Browser {
 			Select select = new Select(element);
 			try {
 				select.selectByVisibleText(option);
-			} catch (NoSuchElementException e1) {
+			} catch (Exception e1) {
 				try {
 					select.selectByValue(option);
-				} catch (NoSuchElementException e2) {
+				} catch (Exception e2) {
 					e2.printStackTrace();
 					error("Could not select the option \"" + option + "\" from the drop down box");
 					throw new Exception("Could not select the option \"" + option + "\" from the drop down box");
