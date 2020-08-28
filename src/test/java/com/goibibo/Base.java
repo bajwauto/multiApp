@@ -102,7 +102,6 @@ public class Base {
 	protected static void takeScreenshot(WebElement element) throws Exception {
 		if (enableScreenshots) {
 			ssCounter.set(ssCounter.get() + 1);
-			currentSSPath.set(currentSSPath.get().replaceAll("xxx", "" + ssCounter.get()));
 			browser.takeVisibleScreenshot(element, currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
 					.replaceAll("xxx", "" + ssCounter.get()));
 		}
@@ -111,7 +110,6 @@ public class Base {
 	protected static void takeFullPageScreenshot() throws Exception {
 		if (enableScreenshots) {
 			ssCounter.set(ssCounter.get() + 1);
-			currentSSPath.set(currentSSPath.get().replaceAll("xxx", "" + ssCounter.get()));
 			browser.takeFullPageScreenshot(currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
 					.replaceAll("xxx", "" + ssCounter.get()));
 		}

@@ -1,10 +1,12 @@
 package com.goibibo.pages;
 
 import java.util.ArrayList;
+import static utilities.Log.debug;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class FlightResultsPage extends Page {
@@ -167,6 +169,71 @@ public class FlightResultsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the current duration range from the duration filter", e);
 		}
+	}
+
+	/**
+	 * This method is used to sort the flights by the specified parameter in the
+	 * specified order
+	 * 
+	 * @param by    - possible parameter values - departure/arrival/duration/price
+	 * @param order - the sorting order
+	 * @return - List of desired parameter values in the desired order
+	 * @throws Exception
+	 */
+	public List<String> sortOnwardFlights(String by, String order) throws Exception {
+		List<String> valuesAfterSort = new ArrayList<String>();
+		String locatorXPath, key;
+		switch (by.toLowerCase().trim()) {
+		case "departure":
+			locatorXPath = "//span[contains(@class,'fb ico11') and text()='DEPARTURE']";
+			key = "departureTime";
+			break;
+		case "duration":
+			locatorXPath = "//span[contains(@class,'fb ico11') and text()='DURATION']";
+			key = "duration";
+			break;
+		case "arrival":
+			locatorXPath = "//span[contains(@class,'fb ico11') and text()='ARRIVAL']";
+			key = "arrivalTime";
+			break;
+		case "price":
+		default:
+			locatorXPath = "//span[contains(@class,'fb ico11') and text()='PRICE']";
+			key = "finalPrice";
+		}
+
+		switch (order.toLowerCase().trim()) {
+		case "descending":
+		case "desc":
+			order = "down";
+			break;
+		case "ascending":
+		case "asc":
+		default:
+			order = "up";
+		}
+
+		try {
+			browser.click(By.xpath(locatorXPath));
+			while (!browser
+					.getAttribute(browser.findElement(By.xpath(locatorXPath + "//following-sibling::i")), "class")
+					.contains(order))
+				browser.click(By.xpath(locatorXPath));
+			if (!browser.getAttribute(browser.findElement(By.xpath(locatorXPath + "//following-sibling::i")), "class")
+					.contains(order))
+				throw new Exception("Could not sort flights in the specified order");
+			else {
+				browser.scrollToPageBottom(200);
+				browser.scrollToPageTop();
+				List<Map<String, String>> flightsDetails = getOnwardFlightsDetails();
+				for (Map<String, String> flightDetails : flightsDetails)
+					valuesAfterSort.add(flightDetails.get(key));
+			}
+		} catch (Exception e) {
+			throw new Exception("Unable to sort the flights by " + by + " in " + order + " order", e);
+		}
+		debug("Flight's " + by + " values extracted after sorting in the " + order + " order: " + valuesAfterSort);
+		return valuesAfterSort;
 	}
 
 	/**

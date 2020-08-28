@@ -2,6 +2,9 @@ package com.goibibo;
 
 import static utilities.Log.error;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.testng.Assert;
@@ -145,6 +148,55 @@ public class Flights extends Base {
 			asert().assertTrue(actualTripClass.equalsIgnoreCase(travelClass),
 					"Travel Class validation failed. Expected Travel Class - " + travelClass
 							+ "; Actual Travel Class - " + actualTripClass);
+			takeFullPageScreenshot();
+		} catch (Exception e) {
+			e.printStackTrace();
+			error(e.getMessage());
+			Assert.fail(e.getMessage(), e);
+		}
+	}
+
+	@Test(dataProvider = "excel", priority = 5, enabled = true, groups = "run")
+	public void oneWayFlightSort(Map<String, Object> testData) throws Exception {
+		try {
+			oneWayFlightSearch(testData);
+			String sortBy = (String) testData.get("sortBy");
+			String sortOrder = (String) testData.get("sortOrder");
+			FlightResultsPage flights = new FlightResultsPage();
+			List<String> sortedFlights = flights.sortOnwardFlights(sortBy, sortOrder);
+			List<Long> actualValues = new ArrayList<Long>();
+			List<Long> expectedValues = new ArrayList<Long>();
+			switch (sortBy.toLowerCase().trim()) {
+			case "duration":
+				for (int i = 0; i < sortedFlights.size(); i++) {
+					List<String> currentMatch = Generic
+							.getRegexMatchesAndGroups(sortedFlights.get(i), "(?i)(\\d+)\\s*h\\s*(\\d+)\\s*m").get(0);
+					actualValues.add(Long.parseLong(currentMatch.get(1)) * 60 + Long.parseLong(currentMatch.get(2)));
+					expectedValues.add(actualValues.get(i));
+				}
+				break;
+			case "arrival":
+			case "departure":
+				for (int i = 0; i < sortedFlights.size(); i++) {
+					List<String> currentMatch = Generic
+							.getRegexMatchesAndGroups(sortedFlights.get(i), "(?i)(\\d+)\\s*:\\s*(\\d+)").get(0);
+					actualValues.add(Long.parseLong(currentMatch.get(1)) * 60 + Long.parseLong(currentMatch.get(2)));
+					expectedValues.add(actualValues.get(i));
+				}
+				break;
+			case "price":
+			default:
+				for (String flight : sortedFlights) {
+					actualValues.add(Long.parseLong(flight.replaceAll("\\D+", "")));
+					expectedValues.add(Long.parseLong(flight.replaceAll("\\D+", "")));
+				}
+			}
+			Collections.sort(expectedValues);
+			if (sortOrder.toLowerCase().contains("desc"))
+				Collections.reverse(expectedValues);
+			Assert.assertEquals(actualValues, expectedValues,
+					"The flights are not sorted by " + sortBy + " in the " + sortOrder + " order");
+
 			takeFullPageScreenshot();
 		} catch (Exception e) {
 			e.printStackTrace();
