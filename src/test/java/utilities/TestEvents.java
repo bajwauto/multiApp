@@ -65,7 +65,7 @@ public class TestEvents implements ITestListener {
 				.replaceAll("SSxxx", "ERROR");
 		error("The test \"" + currentTest + "\" HAS FAILED with parameters - " + result.getParameters()[0]);
 		try {
-			Browser.getInstance().takeVisibleScreenshot(failureSSPath);
+			Browser.getInstance().takeFullPageScreenshot(failureSSPath);
 		} catch (IOException e) {
 			warn("Could not capture screenshot on failure at path - " + failureSSPath);
 		}
