@@ -1,13 +1,22 @@
 package com.goibibo.pages;
 
 import utilities.Browser;
+import utilities.ExtentReport;
+
 import static utilities.Log.*;
 
 public class TopMenu {
 	Browser browser;
+	ExtentReport report;
 
 	public TopMenu() {
 		browser = Browser.getInstance();
+		report = ExtentReport.getInstance();
+	}
+	
+	public void infoLogger(String message) {
+		info(message);
+		report.logInfo(message);
 	}
 
 	/**
@@ -47,7 +56,7 @@ public class TopMenu {
 			error("Unable to click on Top menu item - " + menuItem);
 			throw new Exception("Unable to click on Top menu item - " + menuItem, e);
 		}
-		info("Opened the \"" + menuItem + "\" section");
+		infoLogger("Opened the \"" + menuItem + "\" section");
 	}
 
 	/**

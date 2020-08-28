@@ -18,7 +18,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getSourceCity() throws Exception {
 		try {
-			return browser.getAttribute(browser.findElement("source_City_Textbox"), "value");
+			String sourceCity = browser.getAttribute(browser.findElement("source_City_Textbox"), "value");
+			infoLogger("Source city fetched: " + sourceCity);
+			return sourceCity;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the value of Source City selected", e);
 		}
@@ -32,7 +34,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getDestinationCity() throws Exception {
 		try {
-			return browser.getAttribute(browser.findElement("destination_City_Textbox"), "value");
+			String destinationCity = browser.getAttribute(browser.findElement("destination_City_Textbox"), "value");
+			infoLogger("Destination city fetched: " + destinationCity);
+			return destinationCity;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the value of Destination City selected", e);
 		}
@@ -46,7 +50,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getDepartureDate() throws Exception {
 		try {
-			return browser.getAttribute(browser.findElement("departure_Date_Textbox"), "value");
+			String departureDate = browser.getAttribute(browser.findElement("departure_Date_Textbox"), "value");
+			infoLogger("Departure Date fetched: " + departureDate);
+			return departureDate;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the value of Departure Date selected", e);
 		}
@@ -60,7 +66,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getReturnDate() throws Exception {
 		try {
-			return browser.getAttribute(browser.findElement("return_Date_Textbox"), "value");
+			String returnDate = browser.getAttribute(browser.findElement("return_Date_Textbox"), "value");
+			infoLogger("Return Date fetched: " + returnDate);
+			return returnDate;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the value of Return Date selected", e);
 		}
@@ -75,7 +83,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getTotalTravellers() throws Exception {
 		try {
-			return browser.getText(browser.findElement("total_Travellers_Element"));
+			String totalTravellers = browser.getText(browser.findElement("total_Travellers_Element"));
+			infoLogger("Total Travellers fetched: " + totalTravellers);
+			return totalTravellers;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the total number of travellers", e);
 		}
@@ -89,7 +99,9 @@ public class FlightResultsPage extends Page {
 	 */
 	public String getTravelClass() throws Exception {
 		try {
-			return browser.getText(browser.findElement("travel_Class_Element"));
+			String travelClass = browser.getText(browser.findElement("travel_Class_Element"));
+			infoLogger("Travel Class fetched: " + travelClass);
+			return travelClass;
 		} catch (Exception e) {
 			throw new Exception("Could not fetch the value of Travel Class selected", e);
 		}
@@ -232,7 +244,7 @@ public class FlightResultsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to sort the flights by " + by + " in " + order + " order", e);
 		}
-		debug("Flight's " + by + " values extracted after sorting in the " + order + " order: " + valuesAfterSort);
+		debugLogger("Flight's " + by + " values extracted after sorting in the " + order + " order: " + valuesAfterSort);
 		return valuesAfterSort;
 	}
 
