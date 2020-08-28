@@ -275,23 +275,38 @@ public class Browser {
 	}
 
 	/**
-	 * This method is used to scroll to the bottom of the page in small steps
-	 * 
-	 * @param pixels - size of each step
-	 */
-	public void scrollToPageBottom(long pixels) {
-		long currentHeight, previousHeight = -1;
-		while ((currentHeight = (long) jse().executeScript("return window.pageYOffset")) != previousHeight) {
-			previousHeight = currentHeight;
-			jse().executeScript("window.scrollBy(0," + pixels + ")");
-		}
-	}
-
-	/**
 	 * This method is used to scroll to the page top
 	 */
 	public void scrollToPageTop() {
 		jse().executeScript("window.scrollTo(0,0)");
+	}
+
+	/**
+	 * This method is used to scroll to the bottom of the page in small steps
+	 * 
+	 * @param pixels - size of each step
+	 */
+	public void scrollToPageBottom(long pixels) throws InterruptedException {
+		long currentHeight, previousHeight = -1;
+		while ((currentHeight = (long) jse().executeScript("return window.pageYOffset")) != previousHeight) {
+			previousHeight = currentHeight;
+			jse().executeScript("window.scrollBy(0," + pixels + ")");
+			Thread.sleep(100);
+		}
+	}
+
+	/**
+	 * This method is used to scroll to the top of the page in small steps
+	 * 
+	 * @param pixels - size of each step
+	 */
+	public void scrollToPageTop(long pixels) throws InterruptedException {
+		long currentHeight, previousHeight = -1;
+		while ((currentHeight = (long) jse().executeScript("return window.pageYOffset")) != previousHeight) {
+			previousHeight = currentHeight;
+			jse().executeScript("window.scrollBy(0," + -1 * pixels + ")");
+			Thread.sleep(100);
+		}
 	}
 
 	/**
@@ -701,7 +716,7 @@ public class Browser {
 	 */
 	public void takeFullPageScreenshot(String screenshotPath) throws IOException {
 		Screenshot screenshot = new AShot().coordsProvider(new WebDriverCoordsProvider())
-				.shootingStrategy(ShootingStrategies.viewportPasting(500)).takeScreenshot(driver());
+				.shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver());
 		ImageIO.write(screenshot.getImage(), "jpg", new File(screenshotPath));
 		info("Screenshot of the full page was captured at path - " + screenshotPath);
 	}
