@@ -156,7 +156,7 @@ public class Flights extends Base {
 		}
 	}
 
-	@Test(dataProvider = "excel", priority = 5, enabled = true, groups = "run")
+	@Test(dataProvider = "excel", priority = 5, enabled = true)
 	public void oneWayFlightSort(Map<String, Object> testData) throws Exception {
 		try {
 			oneWayFlightSearch(testData);

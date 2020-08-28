@@ -20,6 +20,7 @@ import org.testng.asserts.SoftAssert;
 
 import utilities.Browser;
 import utilities.ExcelFile;
+import utilities.ExtentReport;
 import utilities.Generic;
 
 public class Base {

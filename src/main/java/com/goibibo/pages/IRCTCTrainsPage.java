@@ -21,6 +21,7 @@ public class IRCTCTrainsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + source + "\" as the source station", e);
 		}
+		infoLogger("Selected the source train station - " + source);
 	}
 
 	/**
@@ -36,6 +37,7 @@ public class IRCTCTrainsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + destination + "\" as the destination station", e);
 		}
+		infoLogger("Selected the destination train station - " + destination);
 	}
 
 	/**
@@ -63,6 +65,7 @@ public class IRCTCTrainsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not select \"" + date + "\" as the journey date");
 		}
+		infoLogger("Selected the journey date - " + date);
 	}
 
 	/**
@@ -74,13 +77,14 @@ public class IRCTCTrainsPage extends Page {
 	public void searchTrains() throws Exception {
 		try {
 			browser.click("search_Button");
+			infoLogger("The train search button was clicked");
 			browser.findElement(By.className("srpCardWrap"));
 		} catch (Exception e) {
 			try {
 				browser.findElement(By.className("noTrainsFoundCard"));
 			} catch (Exception e2) {
 				e2.printStackTrace();
-				warn("No trains are available for the given trip");
+				warnLogger("No trains are available for the given trip");
 			}
 		}
 	}

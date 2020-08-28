@@ -42,6 +42,7 @@ public class TrainRunningStatusPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + nameOrNumber + "\" as the train name or number");
 		}
+		infoLogger("The train name/number(" + nameOrNumber + ") was entered");
 	}
 
 	/**
@@ -56,6 +57,7 @@ public class TrainRunningStatusPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + value + "\" as the Station");
 		}
+		infoLogger("Selected the station - " + value);
 	}
 
 	/**
@@ -80,6 +82,7 @@ public class TrainRunningStatusPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + day + "\" as the Depart Day");
 		}
+		infoLogger("Day selected: " + day);
 	}
 
 	/**
@@ -91,6 +94,7 @@ public class TrainRunningStatusPage extends Page {
 	public void getTrainStatus() throws Exception {
 		try {
 			browser.click("get_Status_Button");
+			infoLogger("The Get train status button was clicked");
 			browser.waitForPageToGetLoaded();
 			browser.findElement(By.id("train_details"));
 		} catch (Exception e) {

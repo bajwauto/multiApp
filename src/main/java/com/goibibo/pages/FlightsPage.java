@@ -1,7 +1,6 @@
 package com.goibibo.pages;
 
 import static utilities.Log.error;
-import static utilities.Log.info;
 
 import org.openqa.selenium.By;
 
@@ -37,7 +36,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to select the trip type \"" + tripType + "\"", e);
 		}
-		info("Selected the trip type - " + tripType);
+		infoLogger("Selected the trip type - " + tripType);
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + sourceCity + "\" as the source city of the trip", e);
 		}
-		info("Selected the Source city - " + sourceCity);
+		infoLogger("Selected the Source city - " + sourceCity);
 	}
 
 	/**
@@ -67,7 +66,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + destinationCity + "\" as the destination city of the trip", e);
 		}
-		info("Selected the Destination city - " + destinationCity);
+		infoLogger("Selected the Destination city - " + destinationCity);
 	}
 
 	private void setCalendarDate(String date, String format) throws Exception {
@@ -99,7 +98,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + date + "\" as the departure date", e);
 		}
-		info("Selected the Deprature Date - " + date);
+		infoLogger("Selected the Deprature Date - " + date);
 	}
 
 	/**
@@ -115,7 +114,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not set \"" + date + "\" as the return date", e);
 		}
-		info("Selected the Return Date - " + date);
+		infoLogger("Selected the Return Date - " + date);
 	}
 
 	/**
@@ -134,7 +133,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to set the number of adult travellers to " + noOfAdults, e);
 		}
-		info("No. of adult travellers set to " + noOfAdults);
+		infoLogger("No. of adult travellers set to " + noOfAdults);
 	}
 
 	/**
@@ -153,7 +152,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to set the number of child travellers to " + noOfChildren, e);
 		}
-		info("No. of children set to " + noOfChildren);
+		infoLogger("No. of children set to " + noOfChildren);
 	}
 
 	/**
@@ -172,7 +171,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to set the number of Infant travellers to " + noOfInfants, e);
 		}
-		info("No. of Infants set to " + noOfInfants);
+		infoLogger("No. of Infants set to " + noOfInfants);
 	}
 
 	/**
@@ -187,7 +186,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not select \"" + travelClass + "\" as the travel class", e);
 		}
-		info("Selected the traveller class - " + travelClass);
+		infoLogger("Selected the traveller class - " + travelClass);
 	}
 
 	/**
@@ -202,7 +201,7 @@ public class FlightsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Could not search flights", e);
 		}
-		info("Flight search was successful");
+		infoLogger("Flight search was successful");
 		return new FlightResultsPage();
 	}
 }

@@ -76,6 +76,24 @@ public class ExtentReport {
 	}
 
 	/**
+	 * This method is used to log an info message to the Extent Report
+	 * 
+	 * @param details - message to be logged as information
+	 */
+	public void logInfo(String details) {
+		extentTest.get().log(Status.INFO, details);
+	}
+
+	/**
+	 * This method is used to log a warning message to the Extent Report
+	 * 
+	 * @param details - message to be logged as warning
+	 */
+	public void logWarn(String details) {
+		extentTest.get().log(Status.WARNING, details);
+	}
+
+	/**
 	 * This method is used to log a failed step to the report
 	 * 
 	 * @param t              - Exception that caused the error
