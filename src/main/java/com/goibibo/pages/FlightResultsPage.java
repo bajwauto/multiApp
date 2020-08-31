@@ -124,66 +124,6 @@ public class FlightResultsPage extends Page {
 	}
 
 	/**
-	 * This method is used to get the current price filter range in the flights
-	 * search results page
-	 * 
-	 * @param direction - possible values - onward/return
-	 * @return - a hashmap containing the minimum and maximum price of the price
-	 *         filter
-	 * @throws Exception
-	 */
-	public Map<String, String> getCurrentPriceFilterRange(String direction) throws Exception {
-		Map<String, String> priceFilterRange = new LinkedHashMap<String, String>();
-		try {
-			switch (direction.toLowerCase().trim()) {
-			case "return":
-				priceFilterRange.put("min", browser.getText(browser.findElement("min_Return_Price_Filter_Value")));
-				priceFilterRange.put("max", browser.getText(browser.findElement("max_Return_Price_Filter_Value")));
-				break;
-			case "onward":
-			default:
-				priceFilterRange.put("min", browser.getText(browser.findElement("min_Onward_Price_Filter_Value")));
-				priceFilterRange.put("max", browser.getText(browser.findElement("max_Onward_Price_Filter_Value")));
-			}
-			return priceFilterRange;
-		} catch (Exception e) {
-			throw new Exception("Could not fetch the current price range from the price filter", e);
-		}
-	}
-
-	/**
-	 * This method is used to get the current duration filter range in the flights
-	 * search results page
-	 * 
-	 * @param direction - possible values - onward/return
-	 * @return - a hashmap containing the minimum and maximum price of the duration
-	 *         filter
-	 * @throws Exception
-	 */
-	public Map<String, String> getCurrentDurationFilterRange(String direction) throws Exception {
-		Map<String, String> durationFilterRange = new LinkedHashMap<String, String>();
-		try {
-			switch (direction.toLowerCase().trim()) {
-			case "return":
-				durationFilterRange.put("min",
-						browser.getText(browser.findElement("min_Return_Duration_Filter_Value")));
-				durationFilterRange.put("max",
-						browser.getText(browser.findElement("max_Reward_Duration_Filter_Value")));
-				break;
-			case "onward":
-			default:
-				durationFilterRange.put("min",
-						browser.getText(browser.findElement("min_Onward_Duration_Filter_Value")));
-				durationFilterRange.put("max",
-						browser.getText(browser.findElement("max_Onward_Duration_Filter_Value")));
-			}
-			return durationFilterRange;
-		} catch (Exception e) {
-			throw new Exception("Could not fetch the current duration range from the duration filter", e);
-		}
-	}
-
-	/**
 	 * This method is used to sort the flights by the specified parameter in the
 	 * specified order
 	 * 
