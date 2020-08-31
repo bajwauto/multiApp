@@ -1,7 +1,7 @@
 package com.goibibo.pages;
 
 import java.util.ArrayList;
-import static utilities.Log.debug;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -244,7 +244,8 @@ public class FlightResultsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to sort the flights by " + by + " in " + order + " order", e);
 		}
-		debugLogger("Flight's " + by + " values extracted after sorting in the " + order + " order: " + valuesAfterSort);
+		debugLogger(
+				"Flight's " + by + " values extracted after sorting in the " + order + " order: " + valuesAfterSort);
 		return valuesAfterSort;
 	}
 
@@ -276,5 +277,140 @@ public class FlightResultsPage extends Page {
 		} catch (Exception e) {
 			throw new Exception("Unable to fetch the flights details", e);
 		}
+	}
+
+	/**
+	 * This method is used to apply a filter to the flight search results
+	 * 
+	 * @param filterName  - types of filters that can be applied on the flights
+	 *                    results page. Possible values are Onward Price/Return
+	 *                    Price/Onward Duration/Return Duration
+	 * @param filterLimit - whether the user wants to adjust the upper or ower limit
+	 *                    of the filter
+	 * @param percentage  - adjust lower/upper slider by some percentage
+	 * @return - list of flights with the specified filter
+	 * @throws Exception
+	 */
+	public List<String> applyFilter(String filterName, String filterLimit, double percentage) throws Exception {
+		List<String> flightsDetail = new ArrayList<String>();
+		try {
+			String slideXPath, sliderXPath, strTemp, key;
+			switch (filterName.toLowerCase().trim()) {
+			case "onward price":
+				strTemp = "Onward Price";
+				key = "finalPrice";
+				break;
+			case "return price":
+				strTemp = "Return Price";
+				key = "finalPrice";
+				break;
+			case "onward duration":
+				strTemp = "Onward Duration";
+				key = "duration";
+				break;
+			case "return duration":
+				strTemp = "Return Duration";
+				key = "duration";
+				break;
+			default:
+				throw new Exception("Invalid filter name - " + filterName);
+			}
+			slideXPath = "//div[div/span/text()='" + strTemp + "']//div[@class='fltSld-connect fltSld-connect-1']";
+			switch (filterLimit.toLowerCase().trim()) {
+			case "upper":
+				sliderXPath = slideXPath + "/following-sibling::div";
+				break;
+			case "lower":
+			default:
+				sliderXPath = slideXPath + "/preceding-sibling::div";
+				break;
+			}
+
+			int slideWidth = browser.getObjectBounds(browser.findElement(By.xpath(slideXPath))).width;
+			browser.dragAndDropBy(browser.findElement(By.xpath(sliderXPath)), (int) (slideWidth * percentage / 100), 0);
+			browser.scrollToPageBottom(200);
+			browser.scrollToPageTop();
+			List<Map<String, String>> flightsDetails = getOnwardFlightsDetails();
+			for (Map<String, String> flightDetails : flightsDetails)
+				flightsDetail.add(flightDetails.get(key));
+		} catch (Exception e) {
+			throw new Exception("Could adjust the \"" + filterLimit + "\" limit of the filter \"" + filterName
+					+ "\" by " + percentage + "%");
+		}
+		infoLogger("Filter applied successfully - Adjusted the \"" + filterLimit + "\" limit of the filter \""
+				+ filterName + "\" by " + percentage + "%. Flight Details fetched: " + flightsDetail);
+		return flightsDetail;
+	}
+
+	/**
+	 * This method is used to get the current filter range values
+	 * 
+	 * @param filterName - types of filters that can be applied on the flights
+	 *                   results page. Possible values are Onward Price/Return
+	 *                   Price/Onward Duration/Return Duration
+	 * @return - lower and upper limit values of the given filter
+	 * @throws Exception
+	 */
+	public Map<String, String> getFilterRange(String filterName) throws Exception {
+		Map<String, String> range = new HashMap<String, String>();
+		try {
+			switch (filterName.toLowerCase().trim()) {
+			case "onward price":
+				range.put("low", browser.getText(browser.findElement("min_Onward_Price_Filter_Value")).trim());
+				range.put("high", browser.getText(browser.findElement("max_Onward_Price_Filter_Value")).trim());
+				break;
+			case "onward duration":
+				range.put("low", browser.getText(browser.findElement("min_Onward_Duration_Filter_Value")).trim());
+				range.put("high", browser.getText(browser.findElement("max_Onward_Duration_Filter_Value")).trim());
+				break;
+			case "return price":
+				range.put("low", browser.getText(browser.findElement("min_Return_Price_Filter_Value")).trim());
+				range.put("high", browser.getText(browser.findElement("max_Return_Price_Filter_Value")).trim());
+				break;
+			case "return duration":
+				range.put("low", browser.getText(browser.findElement("min_Return_Duration_Filter_Value")).trim());
+				range.put("high", browser.getText(browser.findElement("max_Return_Duration_Filter_Value")).trim());
+				break;
+			default:
+				throw new Exception("Invalid filter name - " + filterName);
+			}
+		} catch (Exception e) {
+			throw new Exception("Could not fetch the \"" + filterName + "\" filter range values", e);
+		}
+		infoLogger("Current filter(" + filterName + ") range fetched: " + range.get("low") + " - " + range.get("high"));
+		return range;
+	}
+
+	/**
+	 * This method is used to reset the specified filter
+	 * 
+	 * @param filterName - name of the filter to be reset
+	 * @throws Exception
+	 */
+	public void resetFilter(String filterName) throws Exception {
+		try {
+			switch (filterName.toLowerCase().trim()) {
+			case "onward price":
+				browser.click("onward_Price_Filter");
+				break;
+			case "return price":
+				browser.click("return_Price_Filter");
+				break;
+			case "onward duration":
+				browser.click("onward_Duration_Filter");
+				break;
+			case "return duration":
+				browser.click("return_Duration_Filter");
+				break;
+			case "preferred airlines":
+				browser.click("preferred_Airlines_Filter");
+				break;
+			default:
+				throw new Exception("Invalid filter name - " + filterName);
+			}
+		} catch (Exception e) {
+			throw new Exception("Could not reset the \"" + filterName + "\" filter", e);
+		}
+		infoLogger("The filter \"" + filterName + "\" has been reset successfully");
 	}
 }
