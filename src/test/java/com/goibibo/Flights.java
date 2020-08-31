@@ -4,6 +4,7 @@ import static utilities.Log.error;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -194,10 +195,76 @@ public class Flights extends Base {
 			Collections.sort(expectedValues);
 			if (sortOrder.toLowerCase().contains("desc"))
 				Collections.reverse(expectedValues);
-			Assert.assertEquals(actualValues, expectedValues,
+			asert().assertEquals(actualValues, expectedValues,
 					"The flights are not sorted by " + sortBy + " in the " + sortOrder + " order");
 
 			takeFullPageScreenshot();
+		} catch (Exception e) {
+			e.printStackTrace();
+			error(e.getMessage());
+			Assert.fail(e.getMessage(), e);
+		}
+	}
+
+	@Test(dataProvider = "excel", priority = 6, enabled = true, groups = "run")
+	public void oneWayFlightFilters(Map<String, Object> testData) {
+		try {
+			oneWayFlightSearch(testData);
+			String filter = (String) testData.get("filter");
+			FlightResultsPage flights = new FlightResultsPage();
+			List<String> filteredFlights = new ArrayList<String>();
+			Map<String, String> filterRange = new HashMap<String, String>();
+			switch (filter.toLowerCase().trim()) {
+			case "onward price":
+			case "return price":
+				String[] priceSliders = new String[] { "lower", "upper" };
+				double[] priceSliderPercentages = new double[] { 30, -30 };
+				for (int i = 0; i < priceSliders.length; i++) {
+					filteredFlights = flights.applyFilter(filter, priceSliders[i], priceSliderPercentages[i]);
+					filterRange = flights.getFilterRange(filter);
+					int lowPriceLimit = Integer.parseInt(filterRange.get("low").replaceAll(",", ""));
+					int highPriceLimit = Integer.parseInt(filterRange.get("high").replaceAll(",", ""));
+					for (String filteredFlight : filteredFlights) {
+						int currentPrice = Integer.parseInt(filteredFlight.replaceAll(",", ""));
+						if (currentPrice < lowPriceLimit || currentPrice > highPriceLimit)
+							throw new Exception(
+									"The flight price \"" + currentPrice + "\" doesn't fall in the price Range - ["
+											+ lowPriceLimit + "," + highPriceLimit + "].");
+					}
+					flights.resetFilter(filter);
+				}
+				break;
+			case "onward duration":
+			case "return duration":
+				String durationParserRegex = "^\\s*(\\d+)\\s*h\\s*(\\d+)\\s*m\\s*$";
+				String[] durationSliders = new String[] { "lower", "upper" };
+				double[] durationSliderPercentages = new double[] { 30, -30 };
+				for (int i = 0; i < durationSliders.length; i++) {
+					filteredFlights = flights.applyFilter(filter, durationSliders[i], durationSliderPercentages[i]);
+					filterRange = flights.getFilterRange(filter);
+					List<String> lowerLimitMatches = Generic
+							.getRegexMatchesAndGroups(filterRange.get("low"), durationParserRegex).get(0);
+					List<String> upperLimitMatches = Generic
+							.getRegexMatchesAndGroups(filterRange.get("high"), durationParserRegex).get(0);
+					int lowDurationLimit = Integer.parseInt(lowerLimitMatches.get(1)) * 60
+							+ Integer.parseInt(lowerLimitMatches.get(2));
+					int highDurationLimit = Integer.parseInt(upperLimitMatches.get(1)) * 60
+							+ Integer.parseInt(upperLimitMatches.get(2));
+					for (String filteredFlight : filteredFlights) {
+						List<String> matches = Generic.getRegexMatchesAndGroups(filteredFlight, durationParserRegex)
+								.get(0);
+						int currentDuration = Integer.parseInt(matches.get(1)) * 60 + Integer.parseInt(matches.get(2));
+						if (currentDuration < lowDurationLimit || currentDuration > highDurationLimit)
+							throw new Exception("The flight duration \"" + currentDuration
+									+ "\" doesn't fall in the duration Range - [" + lowDurationLimit + ","
+									+ highDurationLimit + "].");
+					}
+					flights.resetFilter(filter);
+				}
+				break;
+			default:
+				throw new Exception("Invalid filter name - " + filter);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			error(e.getMessage());
