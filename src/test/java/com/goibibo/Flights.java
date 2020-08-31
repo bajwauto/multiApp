@@ -206,7 +206,7 @@ public class Flights extends Base {
 		}
 	}
 
-	@Test(dataProvider = "excel", priority = 6, enabled = true, groups = "run")
+	@Test(dataProvider = "excel", priority = 6, enabled = true)
 	public void oneWayFlightFilters(Map<String, Object> testData) {
 		try {
 			oneWayFlightSearch(testData);
