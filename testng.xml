@@ -24,6 +24,7 @@
 		<classes>
 			<class name="com.goibibo.Flights" />
 			<class name="com.goibibo.Trains" />
+			<class name="com.goibibo.Buses" />
 		</classes>
 	</test>
 </suite> <!-- Suite -->
