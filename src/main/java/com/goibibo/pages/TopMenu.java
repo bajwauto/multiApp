@@ -13,7 +13,7 @@ public class TopMenu {
 		browser = Browser.getInstance();
 		report = ExtentReport.getInstance();
 	}
-	
+
 	public void infoLogger(String message) {
 		info(message);
 		report.logInfo(message);
@@ -96,6 +96,8 @@ public class TopMenu {
 	 */
 	public BusPage openBusMenu() throws Exception {
 		gotoMenu("Bus");
+		browser.waitForPageToGetLoaded();
+		browser.findElement("from_Bus_Stand");
 		return new BusPage();
 	}
 

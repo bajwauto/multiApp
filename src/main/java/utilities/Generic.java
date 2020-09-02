@@ -5,7 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +81,37 @@ public class Generic {
 			for (int i = 0; i <= matcher.groupCount(); i++)
 				currentMatchAndGroups.add(matcher.group(i));
 			matchesAndGroups.add(currentMatchAndGroups);
+		}
+		return matchesAndGroups;
+	}
+
+	/**
+	 * This method is used to get the values of named groups in each substring
+	 * matched by the given regex
+	 * 
+	 * @param text  - String to be tested against the provided regular expression
+	 * @param regex - regular expression pattern containing named capture groups
+	 * @return - List of groupName-Value pairs.
+	 */
+	public static List<Map<String, String>> getRegexNamedGroupsValues(String text, String regex) {
+		List<List<String>> groupNames = getRegexMatchesAndGroups(regex, "<([^>]+)>");
+		List<Map<String, String>> matchesAndGroups = new ArrayList<Map<String, String>>();
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(text);
+		while (matcher.find()) {
+			Map<String, String> groupNameAndValues = new LinkedHashMap<String, String>();
+			for (int i = 0; i < groupNames.size(); i++) {
+				String currentGroupName = groupNames.get(i).get(1);
+				String currentGroupValue;
+				try {
+					currentGroupValue = matcher.group(currentGroupName);
+				} catch (IllegalArgumentException e) {
+					currentGroupValue = null;
+				}
+				if (currentGroupValue != null)
+					groupNameAndValues.put(currentGroupName, currentGroupValue);
+			}
+			matchesAndGroups.add(groupNameAndValues);
 		}
 		return matchesAndGroups;
 	}
