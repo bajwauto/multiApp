@@ -37,18 +37,18 @@ public class Buses extends Base {
 			BusResultsPage busResults = bus.searchBuses();
 
 			String actualSourceCity = busResults.getSourceCity();
-			asert().assertTrue(actualSourceCity.contains(sourceCity),
+			Assert.assertTrue(actualSourceCity.contains(sourceCity),
 					"Incorrect Source City fetched from the Search Results. Actual Source city - " + actualSourceCity
 							+ "\r\n Expected Source City: " + sourceCity);
 
 			String actualdestinationCity = busResults.getDestinationCity();
-			asert().assertTrue(actualdestinationCity.contains(destinationCity),
+			Assert.assertTrue(actualdestinationCity.contains(destinationCity),
 					"Incorrect Destination City fetched from the Search Results. Actual Destination city - "
 							+ actualdestinationCity + "\r\n Expected Destination City: " + destinationCity);
 
 			String actualTravelDate = busResults.getTravelDate();
 			travelDate = Generic.changeDateFormat(travelDate, "d-M-yy", "MMM d, yyyy");
-			asert().assertEquals(actualTravelDate, travelDate, "Incorrect travel date fetched from the search results");
+			Assert.assertEquals(actualTravelDate, travelDate, "Incorrect travel date fetched from the search results");
 			takeFullPageScreenshot();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class Buses extends Base {
 			Collections.sort(expectedValues);
 			if (sortOrder.toLowerCase().contains("desc"))
 				Collections.reverse(expectedValues);
-			asert().assertEquals(actualValues, expectedValues,
+			Assert.assertEquals(actualValues, expectedValues,
 					"The Buses are not sorted by " + sortBy + " in the " + sortOrder + " order");
 
 			takeFullPageScreenshot();

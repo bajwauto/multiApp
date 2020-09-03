@@ -20,7 +20,6 @@ import org.testng.asserts.SoftAssert;
 
 import utilities.Browser;
 import utilities.ExcelFile;
-import utilities.ExtentReport;
 import utilities.Generic;
 
 public class Base {
@@ -33,7 +32,6 @@ public class Base {
 	protected static boolean enableScreenshots;
 	public static ThreadLocal<Integer> datasetRunning = new ThreadLocal<Integer>();
 	protected static ThreadLocal<Integer> ssCounter = new ThreadLocal<Integer>();
-	protected static ThreadLocal<SoftAssert> asert = new ThreadLocal<SoftAssert>();
 	public static ThreadLocal<String> currentSSPath = new ThreadLocal<String>() {
 		@Override
 		protected String initialValue() {
@@ -59,7 +57,6 @@ public class Base {
 			datasetRunning.set(1);
 			ssCounter.set(0);
 		}
-		asert.set(new SoftAssert());
 		browser = Browser.getInstance();
 		browser.set(browserName, Boolean.parseBoolean(executeTestsRemotely.trim()));
 		browser.maximize();
@@ -70,7 +67,6 @@ public class Base {
 	@AfterMethod(alwaysRun = true)
 	public void testTeardown() {
 		browser.quit();
-		asert().assertAll();
 	}
 
 	@DataProvider(name = "excel", parallel = true)
@@ -114,9 +110,5 @@ public class Base {
 			browser.takeFullPageScreenshot(currentSSPath.get().replaceAll("yyy", "" + datasetRunning.get())
 					.replaceAll("xxx", "" + ssCounter.get()));
 		}
-	}
-
-	protected SoftAssert asert() {
-		return asert.get();
 	}
 }
