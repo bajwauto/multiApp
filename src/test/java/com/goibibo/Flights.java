@@ -49,29 +49,29 @@ public class Flights extends Base {
 
 			// Checkpoints and Validations
 			String actualSourceCity = flights.getSourceCity();
-			asert().assertTrue(actualSourceCity.equalsIgnoreCase(sourceCity),
+			Assert.assertTrue(actualSourceCity.equalsIgnoreCase(sourceCity),
 					"Source City validation failed. Expected Source City - " + sourceCity + "; Actual Source City - "
 							+ actualSourceCity);
 
 			String actualDestinationCity = flights.getDestinationCity();
-			asert().assertTrue(actualDestinationCity.equalsIgnoreCase(destinationCity),
+			Assert.assertTrue(actualDestinationCity.equalsIgnoreCase(destinationCity),
 					"Destination City validation failed. Expected Destination City - " + destinationCity
 							+ "; Actual Destination City - " + actualDestinationCity);
 
 			String expectedDepartureDate = Generic.changeDateFormat(departureDate, "d-M-yy", "EEE, d MMM");
 			String actualDepartureDate = flights.getDepartureDate();
-			asert().assertTrue(actualDepartureDate.equalsIgnoreCase(expectedDepartureDate),
+			Assert.assertTrue(actualDepartureDate.equalsIgnoreCase(expectedDepartureDate),
 					"Departure Date validation failed. Expected Departure date - " + departureDate
 							+ "; Actual Departure date - " + actualDepartureDate);
 
 			String actualTotalPax = flights.getTotalTravellers();
 			actualTotalPax = Generic.getRegexMatchesAndGroups(actualTotalPax, "^\\d+").get(0).get(0);
 			int actualTotalPassengers = Integer.parseInt(actualTotalPax);
-			asert().assertEquals(actualTotalPassengers, infants + children + adults,
+			Assert.assertEquals(actualTotalPassengers, infants + children + adults,
 					"Total Passengers validation Failed");
 
 			String actualTripClass = flights.getTravelClass();
-			asert().assertTrue(actualTripClass.equalsIgnoreCase(travelClass),
+			Assert.assertTrue(actualTripClass.equalsIgnoreCase(travelClass),
 					"Travel Class validation failed. Expected Travel Class - " + travelClass
 							+ "; Actual Travel Class - " + actualTripClass);
 
@@ -118,35 +118,35 @@ public class Flights extends Base {
 			FlightResultsPage flights = flightsPage.searchFlights();
 			// Checkpoints and Validations
 			String actualSourceCity = flights.getSourceCity();
-			asert().assertTrue(actualSourceCity.equalsIgnoreCase(sourceCity),
+			Assert.assertTrue(actualSourceCity.equalsIgnoreCase(sourceCity),
 					"Source City validation failed. Expected Source City - " + sourceCity + "; Actual Source City - "
 							+ actualSourceCity);
 
 			String actualDestinationCity = flights.getDestinationCity();
-			asert().assertTrue(actualDestinationCity.equalsIgnoreCase(destinationCity),
+			Assert.assertTrue(actualDestinationCity.equalsIgnoreCase(destinationCity),
 					"Destination City validation failed. Expected Destination City - " + destinationCity
 							+ "; Actual Destination City - " + actualDestinationCity);
 
 			String expectedDepartureDate = Generic.changeDateFormat(departureDate, "d-M-yy", "EEE, d MMM");
 			String actualDepartureDate = flights.getDepartureDate();
-			asert().assertTrue(actualDepartureDate.equalsIgnoreCase(expectedDepartureDate),
+			Assert.assertTrue(actualDepartureDate.equalsIgnoreCase(expectedDepartureDate),
 					"Departure Date validation failed. Expected Departure date - " + departureDate
 							+ "; Actual Departure date - " + actualDepartureDate);
 
 			String expectedReturnDate = Generic.changeDateFormat(returnDate, "d-M-yy", "EEE, d MMM");
 			String actualReturnDate = flights.getReturnDate();
-			asert().assertTrue(actualReturnDate.equalsIgnoreCase(expectedReturnDate),
+			Assert.assertTrue(actualReturnDate.equalsIgnoreCase(expectedReturnDate),
 					"Return Date validation failed. Expected Return date - " + expectedReturnDate
 							+ "; Actual Return date - " + actualReturnDate);
 
 			String actualTotalPax = flights.getTotalTravellers();
 			actualTotalPax = Generic.getRegexMatchesAndGroups(actualTotalPax, "^\\d+").get(0).get(0);
 			int actualTotalPassengers = Integer.parseInt(actualTotalPax);
-			asert().assertEquals(actualTotalPassengers, infants + children + adults,
+			Assert.assertEquals(actualTotalPassengers, infants + children + adults,
 					"Total Passengers validation Failed");
 
 			String actualTripClass = flights.getTravelClass();
-			asert().assertTrue(actualTripClass.equalsIgnoreCase(travelClass),
+			Assert.assertTrue(actualTripClass.equalsIgnoreCase(travelClass),
 					"Travel Class validation failed. Expected Travel Class - " + travelClass
 							+ "; Actual Travel Class - " + actualTripClass);
 			takeFullPageScreenshot();
@@ -195,7 +195,7 @@ public class Flights extends Base {
 			Collections.sort(expectedValues);
 			if (sortOrder.toLowerCase().contains("desc"))
 				Collections.reverse(expectedValues);
-			asert().assertEquals(actualValues, expectedValues,
+			Assert.assertEquals(actualValues, expectedValues,
 					"The flights are not sorted by " + sortBy + " in the " + sortOrder + " order");
 
 			takeFullPageScreenshot();
